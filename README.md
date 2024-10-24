@@ -95,4 +95,4 @@ Contributions are welcome! Please open an issue or submit a pull request for any
 
 ## Acknowledgements
 
-- [Open Voice OS](https://openvoiceos.github.io/) for providing the framework and plugins.
+- [Open Voice OS](https://openvoiceos.org) for providing the framework and plugins.

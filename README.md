@@ -32,8 +32,6 @@ pip install -r requirements.txt
 
 run `ovos_simple_listener/__main__.py` in place of ovos-dinkum-listener, plugins are selected from the default OVOS config `~/.config/mycroft/mycroft.conf`
 
-> NOTE: wake word currently hardcoded to "hey mycroft", multiple wake words are NOT supported
-
 ## Library Usage
 
 To use `ovos-simple-listener`, you can initialize it with the desired components (microphone, STT, VAD, and wake word) as shown in the example below:

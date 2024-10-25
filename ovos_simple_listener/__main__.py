@@ -42,7 +42,7 @@ class OVOSCallbacks(ListenerCallbacks):
     def text_callback(cls, utterance: str, lang: str):
         LOG.info(f"STT: {utterance}")
         cls.bus.emit(Message("recognizer_loop:utterance",
-                             {"utterances": utterance, "lang": lang}))
+                             {"utterances": [utterance], "lang": lang}))
 
 
 def main():

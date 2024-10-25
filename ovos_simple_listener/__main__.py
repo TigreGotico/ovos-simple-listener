@@ -45,7 +45,7 @@ class OVOSCallbacks(ListenerCallbacks):
                              {"utterances": utterance, "lang": lang}))
 
 
-if __name__ == "__main__":
+def main():
     t = SimpleListener(
         mic=OVOSMicrophoneFactory.create(),
         vad=OVOSVADFactory.create(),
@@ -54,3 +54,7 @@ if __name__ == "__main__":
         callbacks=OVOSCallbacks()
     )
     t.run()
+
+
+if __name__ == "__main__":
+    main()

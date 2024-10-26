@@ -10,7 +10,7 @@ from ovos_plugin_manager.vad import OVOSVADFactory
 from ovos_plugin_manager.wakewords import OVOSWakeWordFactory
 from ovos_utils.fakebus import FakeBus
 from ovos_utils.log import LOG
-
+from ovos_config import Configuration
 from ovos_simple_listener import ListenerCallbacks, SimpleListener
 
 
@@ -42,14 +42,15 @@ class OVOSCallbacks(ListenerCallbacks):
     def text_callback(cls, utterance: str, lang: str):
         LOG.info(f"STT: {utterance}")
         cls.bus.emit(Message("recognizer_loop:utterance",
-                             {"utterances": utterance, "lang": lang}))
+                             {"utterances": [utterance], "lang": lang}))
 
 
 def main():
+    ww = Configuration().get("listener", {}).get("wake_word", "hey_mycroft")
     t = SimpleListener(
         mic=OVOSMicrophoneFactory.create(),
         vad=OVOSVADFactory.create(),
-        wakeword=OVOSWakeWordFactory.create_hotword("hey_mycroft"),
+        wakeword=OVOSWakeWordFactory.create_hotword(ww),
         stt=OVOSSTTFactory.create(),
         callbacks=OVOSCallbacks()
     )

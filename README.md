@@ -16,6 +16,16 @@ It was made to power [hivemind-listener](https://github.com/JarbasHiveMind/hivem
 - **Callback System**: Provides a flexible callback mechanism to handle state changes and processed audio.
 - **Multithreading Support**: Operates in a separate thread to avoid blocking the main application flow.
 
+While this repo is lighter than [ovos-dinkum-listener](https://github.com/OpenVoiceOS/ovos-dinkum-listener), it is also **missing** some features
+
+- Audio Transformers plugins
+- Continuous Listening
+- Hybrid Listening
+- Recording Mode
+- Sleep Mode
+- Multiple WakeWords
+
+
 ## Installation
 
 > TODO: This has not yet been packaged and published on pypi, you must run the code manually

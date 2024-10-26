@@ -25,17 +25,12 @@ While this repo is lighter than [ovos-dinkum-listener](https://github.com/OpenVo
 - Sleep Mode
 - Multiple WakeWords
 
-
 ## Installation
-
-> TODO: This has not yet been packaged and published on pypi, you must run the code manually
 
 To use `ovos-simple-listener`, clone this repository and install the necessary dependencies. You can do this using pip:
 
 ```bash
-git clone https://github.com/TigreGotico/ovos-simple-listener
-cd ovos-simple-listener
-pip install -r requirements.txt
+pip install ovos-simple-listener
 ```
 
 ## OVOS Usage

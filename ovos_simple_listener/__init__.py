@@ -99,7 +99,10 @@ class SimpleListener(threading.Thread):
 
                     if ww:
                         if self.callbacks:
-                            self.callbacks.listen_callback()
+                            try:
+                                self.callbacks.listen_callback()
+                            except Exception as e:
+                                LOG.exception(f"listen callback error: {e}")
                         self.state = State.IN_COMMAND
                         sil_start = total_silence_duration = 0.0
                         start = time.time()
@@ -127,20 +130,32 @@ class SimpleListener(threading.Thread):
                     if timed_out:
                         audio = sr.AudioData(speech_data, self.mic.sample_rate, self.mic.sample_width)
                         if self.callbacks:
-                            self.callbacks.audio_callback(audio)
+                            try:
+                                self.callbacks.audio_callback(audio)
+                            except Exception as e:
+                                LOG.exception(f"audio callback error: {e}")
 
                         tx = self.stt.transcribe(audio)
                         if self.callbacks:
-                            if tx:
+                            if tx[0][0]:
                                 utt = tx[0][0].rstrip(" '\"").lstrip(" '\"")
-                                self.callbacks.text_callback(utt, self.lang)
+                                try:
+                                    self.callbacks.text_callback(utt, self.lang)
+                                except Exception as e:
+                                    LOG.exception(f"text callback error: {e}")
                             else:
-                                self.callbacks.error_callback(audio)
+                                try:
+                                    self.callbacks.error_callback(audio)
+                                except Exception as e:
+                                    LOG.exception(f"error callback error: {e}")
 
                         speech_data = b""
                         self.state = State.WAITING_WAKEWORD
                         if self.callbacks:
-                            self.callbacks.end_listen_callback()
+                            try:
+                                self.callbacks.end_listen_callback()
+                            except Exception as e:
+                                LOG.exception(f"end listen callback error: {e}")
             except KeyboardInterrupt:
                 break
             except Exception as e:

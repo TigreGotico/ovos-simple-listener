@@ -1,12 +1,12 @@
 # Changelog
 
-## [0.0.4a1](https://github.com/TigreGotico/ovos-simple-listener/tree/0.0.4a1) (2024-12-28)
+## [0.0.5a1](https://github.com/TigreGotico/ovos-simple-listener/tree/0.0.5a1) (2025-01-16)
 
-[Full Changelog](https://github.com/TigreGotico/ovos-simple-listener/compare/0.0.3...0.0.4a1)
+[Full Changelog](https://github.com/TigreGotico/ovos-simple-listener/compare/0.0.4...0.0.5a1)
 
 **Merged pull requests:**
 
-- fix:callback\_error\_logs [\#5](https://github.com/TigreGotico/ovos-simple-listener/pull/5) ([JarbasAl](https://github.com/JarbasAl))
+- fix:Update requirements.txt [\#7](https://github.com/TigreGotico/ovos-simple-listener/pull/7) ([JarbasAl](https://github.com/JarbasAl))
 
 
 

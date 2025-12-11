@@ -1,12 +1,16 @@
 # Changelog
 
-## [0.0.5a1](https://github.com/TigreGotico/ovos-simple-listener/tree/0.0.5a1) (2025-01-16)
+## [0.0.6a1](https://github.com/TigreGotico/ovos-simple-listener/tree/0.0.6a1) (2025-12-11)
 
-[Full Changelog](https://github.com/TigreGotico/ovos-simple-listener/compare/0.0.4...0.0.5a1)
+[Full Changelog](https://github.com/TigreGotico/ovos-simple-listener/compare/0.0.5...0.0.6a1)
+
+**Closed issues:**
+
+- incompatible with ovos-plugin-manager 1.0.3 [\#9](https://github.com/TigreGotico/ovos-simple-listener/issues/9)
 
 **Merged pull requests:**
 
-- fix:Update requirements.txt [\#7](https://github.com/TigreGotico/ovos-simple-listener/pull/7) ([JarbasAl](https://github.com/JarbasAl))
+- Update ovos-plugin-manager version range [\#10](https://github.com/TigreGotico/ovos-simple-listener/pull/10) ([JarbasAl](https://github.com/JarbasAl))
 
 
 

@@ -1,8 +1,8 @@
 # Changelog
 
-## [0.0.8a1](https://github.com/TigreGotico/ovos-simple-listener/tree/0.0.8a1) (2026-01-23)
+## [0.0.8a2](https://github.com/TigreGotico/ovos-simple-listener/tree/0.0.8a2) (2026-01-23)
 
-[Full Changelog](https://github.com/TigreGotico/ovos-simple-listener/compare/0.0.7a1...0.0.8a1)
+[Full Changelog](https://github.com/TigreGotico/ovos-simple-listener/compare/0.0.7a1...0.0.8a2)
 
 **Merged pull requests:**
 

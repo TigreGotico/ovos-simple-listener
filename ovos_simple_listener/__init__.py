@@ -95,7 +95,7 @@ class SimpleListener(threading.Thread):
                         ww = vad_seconds >= 0.5
                     else:
                         self.wakeword.update(chunk)
-                        ww = self.wakeword.found_wake_word(chunk)
+                        ww = self.wakeword.found_wake_word()
 
                     if ww:
                         if self.callbacks:

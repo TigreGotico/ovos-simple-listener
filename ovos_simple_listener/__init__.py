@@ -72,6 +72,18 @@ class SimpleListener(threading.Thread):
         self.running = False
 
     def run(self):
+        """
+        Main loop that captures microphone audio, detects wake words or speech activity, transcribes completed utterances, and dispatches listener callbacks.
+        
+        Runs until stopped: sets self.running True, starts the microphone, and repeatedly reads audio chunks. While in WAITING_WAKEWORD it detects activation either via the configured wakeword engine or voice activity detection (VAD); on activation it calls callbacks.listen_callback (if present) and switches to IN_COMMAND. While in IN_COMMAND it accumulates audio, tracks silence and total speech duration, and when the utterance completes (silence after a minimum speech length or max speech duration reached) it:
+        - packages the buffered samples into an sr.AudioData,
+        - calls callbacks.audio_callback(audio) if present,
+        - transcribes the audio with self.stt.transcribe(audio),
+        - if the transcription contains text, cleans surrounding quotes/whitespace and calls callbacks.text_callback(utterance, self.lang); otherwise calls callbacks.error_callback(audio),
+        - clears the speech buffer and returns to WAITING_WAKEWORD, calling callbacks.end_listen_callback() if present.
+        
+        The loop breaks on KeyboardInterrupt; other exceptions are logged. On exit self.running is set to False.
+        """
         self.running = True
         self.mic.start()
 

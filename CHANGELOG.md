@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.0.8a1](https://github.com/TigreGotico/ovos-simple-listener/tree/0.0.8a1) (2026-01-23)
+
+[Full Changelog](https://github.com/TigreGotico/ovos-simple-listener/compare/0.0.7a1...0.0.8a1)
+
+**Merged pull requests:**
+
+- fix: wakeword plugins compat [\#20](https://github.com/TigreGotico/ovos-simple-listener/pull/20) ([JarbasAl](https://github.com/JarbasAl))
+
 ## [0.0.7a1](https://github.com/TigreGotico/ovos-simple-listener/tree/0.0.7a1) (2025-12-18)
 
 [Full Changelog](https://github.com/TigreGotico/ovos-simple-listener/compare/0.0.6...0.0.7a1)

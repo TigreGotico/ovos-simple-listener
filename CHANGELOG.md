@@ -1,20 +1,12 @@
 # Changelog
 
-## [0.0.8a2](https://github.com/TigreGotico/ovos-simple-listener/tree/0.0.8a2) (2026-01-23)
+## [0.2.0a1](https://github.com/TigreGotico/ovos-simple-listener/tree/0.2.0a1) (2026-03-11)
 
-[Full Changelog](https://github.com/TigreGotico/ovos-simple-listener/compare/0.0.7a1...0.0.8a2)
-
-**Merged pull requests:**
-
-- fix: wakeword plugins compat [\#20](https://github.com/TigreGotico/ovos-simple-listener/pull/20) ([JarbasAl](https://github.com/JarbasAl))
-
-## [0.0.7a1](https://github.com/TigreGotico/ovos-simple-listener/tree/0.0.7a1) (2025-12-18)
-
-[Full Changelog](https://github.com/TigreGotico/ovos-simple-listener/compare/0.0.6...0.0.7a1)
+[Full Changelog](https://github.com/TigreGotico/ovos-simple-listener/compare/0.1.0...0.2.0a1)
 
 **Merged pull requests:**
 
-- Configure Renovate [\#12](https://github.com/TigreGotico/ovos-simple-listener/pull/12) ([renovate[bot]](https://github.com/apps/renovate))
+- feat: add CI workflows, unit tests, fix FAQ paths, update audit [\#24](https://github.com/TigreGotico/ovos-simple-listener/pull/24) ([JarbasAl](https://github.com/JarbasAl))
 
 
 

@@ -41,8 +41,12 @@ class OVOSCallbacks(ListenerCallbacks):
     @classmethod
     def text_callback(cls, utterance: str, lang: str):
         LOG.info(f"STT: {utterance}")
-        cls.bus.emit(Message("recognizer_loop:utterance",
-                             {"utterances": [utterance], "lang": lang}))
+        payload = {"utterances": [utterance], "lang": lang}
+        # OVOS-AUDIO-IN-1 §5 utterance entry: legacy recognizer_loop:utterance or
+        # spec ovos.utterance.handle, per the deployment 'legacy_namespace' config.
+        topic = "recognizer_loop:utterance" \
+            if Configuration().get("legacy_namespace", True) else "ovos.utterance.handle"
+        cls.bus.emit(Message(topic, payload))
 
 
 def main():

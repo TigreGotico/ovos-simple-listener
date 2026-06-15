@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.0a1](https://github.com/TigreGotico/ovos-simple-listener/tree/0.3.0a1) (2026-06-15)
+
+[Full Changelog](https://github.com/TigreGotico/ovos-simple-listener/compare/0.2.0a1...0.3.0a1)
+
+**Merged pull requests:**
+
+- feat: gate utterance entry topic by legacy\_namespace \(AUDIO-IN-1 §5\) [\#26](https://github.com/TigreGotico/ovos-simple-listener/pull/26) ([JarbasAl](https://github.com/JarbasAl))
+
 ## [0.2.0a1](https://github.com/TigreGotico/ovos-simple-listener/tree/0.2.0a1) (2026-03-11)
 
 [Full Changelog](https://github.com/TigreGotico/ovos-simple-listener/compare/0.1.0...0.2.0a1)

@@ -18,9 +18,10 @@ class TestUtteranceEntryNamespace(unittest.TestCase):
     def setUp(self):
         self.bus = MagicMock()
         OVOSCallbacks.bus = self.bus
+        self._orig_legacy_ns = Configuration().get("legacy_namespace", True)
 
     def tearDown(self):
-        Configuration()["legacy_namespace"] = True
+        Configuration()["legacy_namespace"] = self._orig_legacy_ns
 
     def _topics(self):
         return [c.args[0].msg_type for c in self.bus.emit.call_args_list]

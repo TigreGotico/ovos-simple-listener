@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.1a1](https://github.com/TigreGotico/ovos-simple-listener/tree/0.3.1a1) (2026-06-20)
+
+[Full Changelog](https://github.com/TigreGotico/ovos-simple-listener/compare/0.3.0a1...0.3.1a1)
+
+**Merged pull requests:**
+
+- fix: allow ovos-bus-client 2.x [\#28](https://github.com/TigreGotico/ovos-simple-listener/pull/28) ([JarbasAl](https://github.com/JarbasAl))
+
 ## [0.3.0a1](https://github.com/TigreGotico/ovos-simple-listener/tree/0.3.0a1) (2026-06-15)
 
 [Full Changelog](https://github.com/TigreGotico/ovos-simple-listener/compare/0.2.0a1...0.3.0a1)

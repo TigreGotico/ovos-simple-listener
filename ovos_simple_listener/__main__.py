@@ -4,6 +4,7 @@ import speech_recognition as sr
 from ovos_bus_client import MessageBusClient
 from ovos_bus_client.message import Message
 from ovos_bus_client.util import get_mycroft_bus
+from ovos_spec_tools import SpecMessage
 from ovos_plugin_manager.microphone import OVOSMicrophoneFactory
 from ovos_plugin_manager.stt import OVOSSTTFactory
 from ovos_plugin_manager.vad import OVOSVADFactory
@@ -26,12 +27,12 @@ class OVOSCallbacks(ListenerCallbacks):
         cls.bus.emit(Message("mycroft.audio.play_sound",
                              {"uri": "smd/start_listening.wav"}))
         cls.bus.emit(Message("recognizer_loop:wakeword"))
-        cls.bus.emit(Message("recognizer_loop:record_begin"))
+        cls.bus.emit(Message(SpecMessage.LISTENER_RECORD_STARTED))
 
     @classmethod
     def end_listen_callback(cls):
         LOG.info("New loop state: WAITING_WAKEWORD")
-        cls.bus.emit(Message("recognizer_loop:record_end"))
+        cls.bus.emit(Message(SpecMessage.LISTENER_RECORD_ENDED))
 
     @classmethod
     def error_callback(cls, audio: sr.AudioData):
@@ -42,11 +43,10 @@ class OVOSCallbacks(ListenerCallbacks):
     def text_callback(cls, utterance: str, lang: str):
         LOG.info(f"STT: {utterance}")
         payload = {"utterances": [utterance], "lang": lang}
-        # OVOS-AUDIO-IN-1 §5 utterance entry: legacy recognizer_loop:utterance or
-        # spec ovos.utterance.handle, per the deployment 'legacy_namespace' config.
-        topic = "recognizer_loop:utterance" \
-            if Configuration().get("legacy_namespace", True) else "ovos.utterance.handle"
-        cls.bus.emit(Message(topic, payload))
+        # OVOS-AUDIO-IN-1 §5 utterance entry. The MessageBusClient namespace
+        # migration transparently also-emits the legacy recognizer_loop:utterance
+        # counterpart, so peers on the old namespace keep working.
+        cls.bus.emit(Message(SpecMessage.UTTERANCE, payload))
 
 
 def main():

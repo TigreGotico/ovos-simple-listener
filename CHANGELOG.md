@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.1a2](https://github.com/TigreGotico/ovos-simple-listener/tree/0.3.1a2) (2026-07-30)
+
+[Full Changelog](https://github.com/TigreGotico/ovos-simple-listener/compare/0.3.1a1...0.3.1a2)
+
+**Merged pull requests:**
+
+- docs: rewrite README in Simplified Technical English [\#31](https://github.com/TigreGotico/ovos-simple-listener/pull/31) ([JarbasAl](https://github.com/JarbasAl))
+
 ## [0.3.1a1](https://github.com/TigreGotico/ovos-simple-listener/tree/0.3.1a1) (2026-06-20)
 
 [Full Changelog](https://github.com/TigreGotico/ovos-simple-listener/compare/0.3.0a1...0.3.1a1)

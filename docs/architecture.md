@@ -1,5 +1,5 @@
 
-# ovos-simple-listener — Architecture Reference
+# ovos-simple-listener: Architecture Reference
 
 ## Overview
 
@@ -10,13 +10,13 @@
 ```
 ovos_simple_listener/
 ├── __init__.py       # SimpleListener, ListenerCallbacks, State
-├── __main__.py       # OVOSCallbacks, main() — OVOS messagebus integration
+├── __main__.py       # OVOSCallbacks, main(): OVOS messagebus integration
 └── version.py        # __version__
 ```
 
 ## Pipeline Stages
 
-### Stage 1: Audio Capture — Microphone Plugin
+### Stage 1: Audio Capture (Microphone Plugin)
 
 **Interface**: `ovos_plugin_manager.templates.microphone.Microphone`
 **Factory**: `ovos_plugin_manager.microphone.OVOSMicrophoneFactory`
@@ -24,10 +24,10 @@ ovos_simple_listener/
 The microphone plugin provides raw audio in chunks. The pipeline reads one chunk per loop iteration via `mic.read_chunk()`.
 
 Key microphone properties used by the listener:
-- `mic.sample_rate` — samples per second (e.g. 16000 Hz), used to calculate chunk duration.
-- `mic.chunk_size` — number of samples per chunk, used to calculate chunk duration.
-- `mic.sample_width` — bytes per sample, passed to `sr.AudioData` for STT.
-- `mic.start()` — called once at the start of `SimpleListener.run()`.
+- `mic.sample_rate`: samples per second (e.g. 16000 Hz), used to calculate chunk duration.
+- `mic.chunk_size`: number of samples per chunk, used to calculate chunk duration.
+- `mic.sample_width`: bytes per sample, passed to `sr.AudioData` for STT.
+- `mic.start()`: called once at the start of `SimpleListener.run()`.
 
 **Chunk duration calculation**:
 ```python
@@ -36,7 +36,7 @@ chunk_duration = mic.chunk_size / mic.sample_rate  # seconds per chunk
 
 This is used to track cumulative VAD time in `WAITING_WAKEWORD` mode when no wake word engine is configured.
 
-### Stage 2: Wake Word Detection — HotWord Plugin
+### Stage 2: Wake Word Detection (HotWord Plugin)
 
 **Interface**: `ovos_plugin_manager.templates.hotwords.HotWordEngine`
 **Factory**: `ovos_plugin_manager.wakewords.OVOSWakeWordFactory`
@@ -45,13 +45,13 @@ Wake word detection only runs in `WAITING_WAKEWORD` state.
 
 Two activation modes:
 
-**Mode A — With wake word engine** (`wakeword is not None`):
+**Mode A: with wake word engine** (`wakeword is not None`):
 ```python
 self.wakeword.update(chunk)       # feed audio chunk to the engine
 ww = self.wakeword.found_wake_word()  # returns True if wake word detected
 ```
 
-**Mode B — VAD-only** (`wakeword is None`):
+**Mode B: VAD-only** (`wakeword is None`):
 ```python
 if self.vad.is_silence(chunk):
     vad_seconds = 0
@@ -62,7 +62,7 @@ ww = vad_seconds >= 0.5  # activates after 0.5 continuous seconds of speech
 
 When `ww` becomes `True`, the listener transitions to `IN_COMMAND`.
 
-### Stage 3: Voice Activity Detection — VAD Plugin
+### Stage 3: Voice Activity Detection (VAD Plugin)
 
 **Interface**: `ovos_plugin_manager.templates.vad.VADEngine`
 **Factory**: `ovos_plugin_manager.vad.OVOSVADFactory`
@@ -102,7 +102,7 @@ speech_data += chunk
 
 This captures the complete utterance including any natural pauses within speech.
 
-### Stage 5: STT Transcription — STT Plugin
+### Stage 5: STT Transcription (STT Plugin)
 
 **Interface**: `ovos_plugin_manager.templates.stt.STT`
 **Factory**: `ovos_plugin_manager.stt.OVOSSTTFactory`
@@ -138,7 +138,7 @@ def lang(self) -> str:
 
 ### Stage 6: Callback Dispatch
 
-`ListenerCallbacks` is a plain class with five classmethod hooks. All five are called with `try/except` guards — a callback exception does not crash the listener loop.
+`ListenerCallbacks` is a plain class with five classmethod hooks. All five are called with `try/except` guards, so a callback exception does not crash the listener loop.
 
 ```python
 class ListenerCallbacks:
@@ -170,25 +170,25 @@ The `get_mycroft_bus()` function connects to the running OVOS messagebus using t
 
 ### Bus Messages
 
-| Event | Message Type | Payload |
-|---|---|---|
-| Wake word detected | `recognizer_loop:wakeword` | — |
-| Recording starts | `recognizer_loop:record_begin` | — |
-| Play listen sound | `mycroft.audio.play_sound` | `{"uri": "smd/start_listening.wav"}` |
-| Recording ends | `recognizer_loop:record_end` | — |
-| STT success | `recognizer_loop:utterance` | `{"utterances": [text], "lang": lang}` |
-| STT failure | `recognizer_loop:speech.recognition.unknown` | — |
+- Wake word detected: sends `recognizer_loop:wakeword` with no payload.
+- Recording starts: sends `recognizer_loop:record_begin` with no payload.
+- Play listen sound: sends `mycroft.audio.play_sound` with payload `{"uri": "smd/start_listening.wav"}`.
+- Recording ends: sends `recognizer_loop:record_end` with no payload.
 
-The `recognizer_loop:utterance` message is the primary output — `ovos-core` listens for this to route the utterance to the appropriate skill via the intent pipeline.
+- STT success: sends `recognizer_loop:utterance` with payload `{"utterances": [text], "lang": lang}`.
+- STT failure: sends `recognizer_loop:speech.recognition.unknown` with no payload.
+
+The `recognizer_loop:utterance` message is the primary output. `ovos-core` listens for this message to route the utterance to the correct skill through the intent pipeline.
 
 ## Thread Model
 
-`SimpleListener` runs as a **daemon thread**. The `run()` loop:
+`SimpleListener` runs as a **daemon thread**. The `run()` loop does this:
 - Calls `self.mic.start()` once.
-- Loops continuously reading chunks and processing state.
+- Loops continuously, reading chunks and processing state.
 - Breaks on `KeyboardInterrupt`.
+
 - Sets `self.running = False` on exit.
-- Can be stopped externally by calling `listener.stop()` (sets `self.running = False`).
+- Can be stopped from outside by calling `listener.stop()`, which sets `self.running = False`.
 
 Because it is a daemon thread, it will be killed automatically when the main thread exits. In the OVOS `main()` entrypoint, `t.run()` is called directly (blocking), not `t.start()`.
 
@@ -255,7 +255,10 @@ All plugin instances are created by their respective factory classes, which read
 
 ## Cross-References
 
-- [index.md](index.md) — Overview, usage, and when to use simple vs dinkum
-- [ovos-plugin-manager](https://github.com/OpenVoiceOS/ovos-plugin-manager) — Plugin factories and base templates
-- [ovos-config](https://github.com/OpenVoiceOS/ovos-config) — Configuration system
-- [ovos-dinkum-listener](https://github.com/OpenVoiceOS/ovos-dinkum-listener) — Full-featured listener for comparison
+- [index.md](index.md): overview, usage, and when to use simple vs dinkum
+- [ovos-plugin-manager](https://github.com/OpenVoiceOS/ovos-plugin-manager): plugin factories and base templates
+- [ovos-config](https://github.com/OpenVoiceOS/ovos-config): configuration system
+- [ovos-dinkum-listener](https://github.com/OpenVoiceOS/ovos-dinkum-listener): full-featured listener for comparison
+
+---
+[Home](index.md)

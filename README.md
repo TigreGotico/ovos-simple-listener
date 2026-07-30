@@ -1,24 +1,22 @@
 # OVOS Simple Listener
 
-`ovos-simple-listener` is a lightweight alternative to `ovos-dinkum-listener`, designed for efficient wake word detection and speech recognition. 
+`ovos-simple-listener` is a lightweight alternative to `ovos-dinkum-listener`. It handles wake word detection, voice activity detection (VAD), and speech-to-text (STT) transcription for the Open Voice OS (OVOS) framework.
 
-This listener provides a streamlined approach for integrating voice command capabilities into your applications using the Open Voice OS (OVOS) framework.
+It was built to power [hivemind-listener](https://github.com/JarbasHiveMind/hivemind-listener) and [hivemind-mic-satellite](https://github.com/JarbasHiveMind/hivemind-mic-satellite). You can also use it in place of [ovos-dinkum-listener](https://github.com/OpenVoiceOS/ovos-dinkum-listener) in your OVOS setup.
 
-It was made to power [hivemind-listener](https://github.com/JarbasHiveMind/hivemind-listener) and [hivemind-mic-satellite](https://github.com/JarbasHiveMind/hivemind-mic-satellite), but can also be used in place of [ovos-dinkum-listener](https://github.com/OpenVoiceOS/ovos-dinkum-listener) in your OVOS setups
-
-> at around 150 Lines of code, this repo is a good clean reference of how to use OVOS audio plugins in your own applications
+At around 150 lines of code, this repo is a clean reference for how to use OVOS audio plugins in your own applications.
 
 ## Features
 
-- **Wake Word Detection**: Supports customizable wake word engines to initiate listening.
-- **Voice Activity Detection (VAD)**: Detects silence and speech to optimize audio processing.
-- **Speech Recognition**: Utilizes various speech-to-text (STT) engines to transcribe audio input.
-- **Callback System**: Provides a flexible callback mechanism to handle state changes and processed audio.
-- **Multithreading Support**: Operates in a separate thread to avoid blocking the main application flow.
+- **Wake Word Detection**: supports customizable wake word engines to start listening.
+- **Voice Activity Detection (VAD)**: detects silence and speech to optimize audio processing.
+- **Speech Recognition**: uses various speech-to-text (STT) engines to transcribe audio input.
+- **Callback System**: gives a flexible callback mechanism to handle state changes and processed audio.
+- **Multithreading Support**: runs in a separate thread so it does not block the main application flow.
 
-While this repo is lighter than [ovos-dinkum-listener](https://github.com/OpenVoiceOS/ovos-dinkum-listener), it is also **missing** some features
+This repo is lighter than [ovos-dinkum-listener](https://github.com/OpenVoiceOS/ovos-dinkum-listener), so it is also missing some features:
 
-- Audio Transformers plugins
+- Audio Transformer plugins
 - Continuous Listening
 - Hybrid Listening
 - Recording Mode
@@ -27,7 +25,7 @@ While this repo is lighter than [ovos-dinkum-listener](https://github.com/OpenVo
 
 ## Installation
 
-To use `ovos-simple-listener`, clone this repository and install the necessary dependencies. You can do this using pip:
+Install `ovos-simple-listener` with pip:
 
 ```bash
 pip install ovos-simple-listener
@@ -35,11 +33,11 @@ pip install ovos-simple-listener
 
 ## OVOS Usage
 
-run `ovos_simple_listener/__main__.py` in place of ovos-dinkum-listener, plugins are selected from the default OVOS config `~/.config/mycroft/mycroft.conf`
+Run `ovos_simple_listener/__main__.py` in place of `ovos-dinkum-listener`. Plugins are selected from the default OVOS config at `~/.config/mycroft/mycroft.conf`.
 
 ## Library Usage
 
-To use `ovos-simple-listener`, you can initialize it with the desired components (microphone, STT, VAD, and wake word) as shown in the example below:
+Initialize `ovos-simple-listener` with the components you want (microphone, STT, VAD, and wake word), as shown below.
 
 ```python
 from ovos_simple_listener import SimpleListener
@@ -60,7 +58,7 @@ listener.run()
 
 ### Callbacks
 
-You can implement your own callbacks by extending the `ListenerCallbacks` class to handle events such as starting a command, ending listening, processing audio, errors, and recognizing text.
+You can add your own callbacks by extending the `ListenerCallbacks` class. Use it to handle events such as starting a command, ending listening, processing audio, errors, and recognizing text.
 
 ```python
 from ovos_simple_listener import ListenerCallbacks
@@ -92,10 +90,24 @@ class MyCallbacks(ListenerCallbacks):
         pass
 ```
 
+## Related Projects
+
+- [ovos-dinkum-listener](https://github.com/OpenVoiceOS/ovos-dinkum-listener): the full-featured production listener this repo is a lightweight alternative to.
+- [ovos-plugin-manager](https://github.com/OpenVoiceOS/ovos-plugin-manager): supplies the microphone, STT, VAD, and wake word factories this repo uses.
+- [ovos-core](https://github.com/OpenVoiceOS/ovos-core): receives the recognized utterances this repo sends over the messagebus.
+- [hivemind-listener](https://github.com/JarbasHiveMind/hivemind-listener): a primary use case for this listener.
+- [hivemind-mic-satellite](https://github.com/JarbasHiveMind/hivemind-mic-satellite): a satellite device that uses this listener.
+
+See [docs/index.md](docs/index.md) for a full overview, and [docs/architecture.md](docs/architecture.md) for the pipeline architecture in detail.
+
 ## Contributing
 
-Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
+Contributions are welcome. Open an issue or submit a pull request for any improvements or bug fixes.
 
 ## Acknowledgements
 
-- [Open Voice OS](https://openvoiceos.org) for providing the framework and plugins.
+- [Open Voice OS](https://openvoiceos.org) for the framework and plugins.
+
+## License
+
+This project is licensed under the terms in [LICENSE](LICENSE).

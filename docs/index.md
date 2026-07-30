@@ -1,30 +1,28 @@
 
-# ovos-simple-listener — Lightweight Voice Listener
+# ovos-simple-listener: Lightweight Voice Listener
 
 ## What Is This?
 
 `ovos-simple-listener` is a **minimal voice listener** for OpenVoiceOS. It implements the core microphone → wake word → STT pipeline in approximately 150 lines of Python, using the same plugin interfaces as `ovos-dinkum-listener`.
 
-It was originally created to power [hivemind-listener](https://github.com/JarbasHiveMind/hivemind-listener) and [hivemind-mic-satellite](https://github.com/JarbasHiveMind/hivemind-mic-satellite) — HiveMind satellite devices that need a lightweight audio frontend. It can also be used as a drop-in replacement for `ovos-dinkum-listener` in standard OVOS setups.
+It was originally created to power [hivemind-listener](https://github.com/JarbasHiveMind/hivemind-listener) and [hivemind-mic-satellite](https://github.com/JarbasHiveMind/hivemind-mic-satellite), two HiveMind satellite devices that need a lightweight audio frontend. It can also be used as a drop-in replacement for `ovos-dinkum-listener` in standard OVOS setups.
 
 ## What Makes It "Simple"?
 
-The key design difference from `ovos-dinkum-listener` is scope. The simple listener deliberately omits features that add complexity:
+The key design difference from `ovos-dinkum-listener` is scope. The simple listener deliberately omits features that add complexity.
 
-| Feature | ovos-simple-listener | ovos-dinkum-listener |
-|---|---|---|
-| Wake word detection | yes | yes |
-| VAD (voice activity detection) | yes | yes |
-| STT transcription | yes | yes |
-| Messagebus integration | yes (via `__main__.py`) | yes |
-| Audio Transformer plugins | **no** | yes |
-| Continuous Listening mode | **no** | yes |
-| Hybrid Listening mode | **no** | yes |
-| Recording Mode | **no** | yes |
-| Sleep Mode | **no** | yes |
-| Multiple wake words | **no** | yes |
+`ovos-simple-listener` supports wake word detection, VAD (voice activity detection), STT transcription, and messagebus integration (via `__main__.py`), the same as `ovos-dinkum-listener`.
 
-`ovos-dinkum-listener` is the full-featured production listener. `ovos-simple-listener` is appropriate when the above missing features are not needed and minimal resource usage or code simplicity is a priority.
+`ovos-simple-listener` does not support these `ovos-dinkum-listener` features:
+
+- Audio Transformer plugins
+- Continuous Listening mode
+- Hybrid Listening mode
+- Recording Mode
+- Sleep Mode
+- Multiple wake words
+
+`ovos-dinkum-listener` is the full-featured production listener. `ovos-simple-listener` is appropriate when the missing features above are not needed and minimal resource usage or code simplicity is a priority.
 
 ## Architecture
 
@@ -87,13 +85,11 @@ When `wakeword=None`, the listener uses VAD alone: any 0.5 seconds of non-silenc
 
 `ListenerCallbacks` defines five event hooks:
 
-| Callback | When Called | Default Behaviour |
-|---|---|---|
-| `listen_callback()` | When wake word is detected / recording begins | Logs `IN_COMMAND` |
-| `end_listen_callback()` | After utterance is processed / returns to idle | Logs `WAITING_WAKEWORD` |
-| `audio_callback(audio)` | When audio recording is complete, before STT | Logs "Speech finished!" |
-| `error_callback(audio)` | When STT returns empty / fails | Logs "STT Failure" |
-| `text_callback(utterance, lang)` | When STT returns text | Logs the transcript |
+- `listen_callback()`: called when the wake word is detected or recording begins. Default behavior logs `IN_COMMAND`.
+- `end_listen_callback()`: called after the utterance is processed and the listener returns to idle. Default behavior logs `WAITING_WAKEWORD`.
+- `audio_callback(audio)`: called when audio recording is complete, before STT. Default behavior logs "Speech finished!"
+- `error_callback(audio)`: called when STT returns empty or fails. Default behavior logs "STT Failure".
+- `text_callback(utterance, lang)`: called when STT returns text. Default behavior logs the transcript.
 
 The default callbacks only log. Subclass `ListenerCallbacks` to add custom behaviour.
 
@@ -212,10 +208,13 @@ Use `ovos-dinkum-listener` when:
 
 ## Cross-References
 
-- [architecture.md](architecture.md) — Pipeline stages and plugin interfaces in detail
-- [ovos-dinkum-listener](https://github.com/OpenVoiceOS/ovos-dinkum-listener) — Full-featured production listener
-- [ovos-plugin-manager](https://github.com/OpenVoiceOS/ovos-plugin-manager) — Plugin discovery, factories, and templates
-- [ovos-core](https://github.com/OpenVoiceOS/ovos-core) — Receives `recognizer_loop:utterance` messages
-- [ovos-bus-client](https://github.com/OpenVoiceOS/ovos-bus-client) — Messagebus client used for OVOS integration
-- [hivemind-listener](https://github.com/JarbasHiveMind/hivemind-listener) — Primary use case for this listener
-- [hivemind-mic-satellite](https://github.com/JarbasHiveMind/hivemind-mic-satellite) — Satellite device using this listener
+- [architecture.md](architecture.md): pipeline stages and plugin interfaces in detail
+- [ovos-dinkum-listener](https://github.com/OpenVoiceOS/ovos-dinkum-listener): full-featured production listener
+- [ovos-plugin-manager](https://github.com/OpenVoiceOS/ovos-plugin-manager): plugin discovery and factory classes
+- [ovos-core](https://github.com/OpenVoiceOS/ovos-core): receives `recognizer_loop:utterance` messages
+- [ovos-bus-client](https://github.com/OpenVoiceOS/ovos-bus-client): messagebus client used for OVOS integration
+
+Related projects that use this listener:
+
+- [hivemind-listener](https://github.com/JarbasHiveMind/hivemind-listener): primary use case for this listener
+- [hivemind-mic-satellite](https://github.com/JarbasHiveMind/hivemind-mic-satellite): satellite device using this listener

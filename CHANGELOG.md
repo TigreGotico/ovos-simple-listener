@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.2a1](https://github.com/TigreGotico/ovos-simple-listener/tree/0.3.2a1) (2026-09-03)
+
+[Full Changelog](https://github.com/TigreGotico/ovos-simple-listener/compare/0.3.1a2...0.3.2a1)
+
+**Merged pull requests:**
+
+- fix: always finalize utterance and recover when STT errors or returns no transcript [\#34](https://github.com/TigreGotico/ovos-simple-listener/pull/34) ([JarbasAl](https://github.com/JarbasAl))
+
 ## [0.3.1a2](https://github.com/TigreGotico/ovos-simple-listener/tree/0.3.1a2) (2026-07-30)
 
 [Full Changelog](https://github.com/TigreGotico/ovos-simple-listener/compare/0.3.1a1...0.3.1a2)

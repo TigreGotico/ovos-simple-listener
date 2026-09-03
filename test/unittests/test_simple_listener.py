@@ -171,6 +171,18 @@ class TestSimpleListenerStop(unittest.TestCase):
         sl.stop()
         self.assertFalse(sl.running)
 
+    def test_stop_calls_mic_stop(self):
+        from ovos_simple_listener import SimpleListener
+        mic = _make_mock_mic()
+        sl = SimpleListener(
+            mic=mic,
+            vad=_make_mock_vad(),
+            stt=_make_mock_stt(),
+        )
+        sl.running = True
+        sl.stop()
+        mic.stop.assert_called_once()
+
 
 # ---------------------------------------------------------------------------
 # Wakeword detection path
@@ -376,6 +388,132 @@ class TestUtterancePath(unittest.TestCase):
         self._run_to_utterance(sl)
 
         self.assertEqual(sl.state, State.WAITING_WAKEWORD)
+
+
+# ---------------------------------------------------------------------------
+# Callback exception isolation
+# ---------------------------------------------------------------------------
+
+class TestSttNonHappyPathRecovery(unittest.TestCase):
+    """A raising or empty STT result must not wedge the loop (regression)."""
+
+    def _run_to_utterance(self, sl, timeout=3.0):
+        """Run in a thread; return when text_callback or error_callback fires."""
+        t = threading.Thread(target=sl.run, daemon=True)
+        t.start()
+        deadline = time.time() + timeout
+        while time.time() < deadline:
+            if (sl.callbacks.text_callback.called or
+                    sl.callbacks.error_callback.called):
+                break
+            time.sleep(0.01)
+        return t
+
+    def test_stt_raises_fires_error_callback_and_resets_state(self):
+        """A raising transcribe() must not escape the loop unhandled."""
+        from ovos_simple_listener import SimpleListener, State
+
+        ww = _make_mock_wakeword(found=True)
+        callbacks = MagicMock()
+        mic = _make_mock_mic()
+        vad = _make_mock_vad(silence=True)
+        stt = _make_mock_stt("hello")
+        stt.transcribe.side_effect = RuntimeError("network error")
+
+        seen_states = []
+        callbacks.end_listen_callback.side_effect = lambda: seen_states.append(sl.state)
+
+        sl = SimpleListener(mic=mic, vad=vad, stt=stt, wakeword=ww, callbacks=callbacks,
+                            max_silence_seconds=0.0, min_speech_seconds=0.0)
+        t = self._run_to_utterance(sl)
+
+        callbacks.error_callback.assert_called()
+        callbacks.text_callback.assert_not_called()
+        callbacks.end_listen_callback.assert_called()
+        # state was already reset to WAITING_WAKEWORD by the time end_listen fired
+        self.assertEqual(seen_states[0], State.WAITING_WAKEWORD)
+
+        sl.stop()
+        t.join(timeout=2)
+
+    def test_stt_raises_recovers_on_next_utterance(self):
+        """After a raising STT call, the next utterance transcribes normally."""
+        from ovos_simple_listener import SimpleListener, State
+
+        ww = _make_mock_wakeword(found=True)
+        callbacks = MagicMock()
+        mic = _make_mock_mic()
+        vad = _make_mock_vad(silence=True)
+        stt = _make_mock_stt("hello world")
+        stt.transcribe.side_effect = [RuntimeError("network error"), [("hello world", 0.9)]]
+
+        sl = SimpleListener(mic=mic, vad=vad, stt=stt, wakeword=ww, callbacks=callbacks,
+                            max_silence_seconds=0.0, min_speech_seconds=0.0)
+        t = threading.Thread(target=sl.run, daemon=True)
+        t.start()
+
+        deadline = time.time() + 3
+        while time.time() < deadline and not callbacks.text_callback.called:
+            time.sleep(0.01)
+
+        sl.stop()
+        t.join(timeout=2)
+
+        callbacks.error_callback.assert_called()
+        callbacks.text_callback.assert_called()
+
+    def test_stt_returns_empty_list_fires_error_callback_and_resets_state(self):
+        """transcribe() returning [] must not raise IndexError and wedge."""
+        from ovos_simple_listener import SimpleListener, State
+
+        ww = _make_mock_wakeword(found=True)
+        callbacks = MagicMock()
+        mic = _make_mock_mic()
+        vad = _make_mock_vad(silence=True)
+        stt = _make_mock_stt("hello")
+        stt.transcribe.return_value = []
+
+        seen_states = []
+        callbacks.end_listen_callback.side_effect = lambda: seen_states.append(sl.state)
+
+        sl = SimpleListener(mic=mic, vad=vad, stt=stt, wakeword=ww, callbacks=callbacks,
+                            max_silence_seconds=0.0, min_speech_seconds=0.0)
+        t = self._run_to_utterance(sl)
+
+        callbacks.error_callback.assert_called()
+        callbacks.text_callback.assert_not_called()
+        callbacks.end_listen_callback.assert_called()
+        # state was already reset to WAITING_WAKEWORD by the time end_listen fired
+        self.assertEqual(seen_states[0], State.WAITING_WAKEWORD)
+
+        sl.stop()
+        t.join(timeout=2)
+
+    def test_stt_returns_empty_list_recovers_on_next_utterance(self):
+        """After an empty transcription, the next utterance transcribes normally."""
+        from ovos_simple_listener import SimpleListener, State
+
+        ww = _make_mock_wakeword(found=True)
+        callbacks = MagicMock()
+        mic = _make_mock_mic()
+        vad = _make_mock_vad(silence=True)
+        stt = _make_mock_stt("hello world")
+        stt.transcribe.side_effect = [[], [("hello world", 0.9)]]
+
+        sl = SimpleListener(mic=mic, vad=vad, stt=stt, wakeword=ww, callbacks=callbacks,
+                            max_silence_seconds=0.0, min_speech_seconds=0.0)
+        t = threading.Thread(target=sl.run, daemon=True)
+        t.start()
+
+        deadline = time.time() + 3
+        while time.time() < deadline and not callbacks.text_callback.called:
+            time.sleep(0.01)
+
+        sl.stop()
+        t.join(timeout=2)
+
+        callbacks.error_callback.assert_called()
+        callbacks.text_callback.assert_called()
 
 
 # ---------------------------------------------------------------------------

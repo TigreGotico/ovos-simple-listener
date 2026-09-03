@@ -70,6 +70,8 @@ class SimpleListener(threading.Thread):
 
     def stop(self):
         self.running = False
+        if self.mic is not None:
+            self.mic.stop()
 
     def run(self):
         """
@@ -147,27 +149,33 @@ class SimpleListener(threading.Thread):
                             except Exception as e:
                                 LOG.exception(f"audio callback error: {e}")
 
-                        tx = self.stt.transcribe(audio)
-                        if self.callbacks:
-                            if tx[0][0]:
-                                utt = tx[0][0].rstrip(" '\"").lstrip(" '\"")
-                                try:
-                                    self.callbacks.text_callback(utt, self.lang)
-                                except Exception as e:
-                                    LOG.exception(f"text callback error: {e}")
-                            else:
-                                try:
-                                    self.callbacks.error_callback(audio)
-                                except Exception as e:
-                                    LOG.exception(f"error callback error: {e}")
-
-                        speech_data = b""
-                        self.state = State.WAITING_WAKEWORD
-                        if self.callbacks:
+                        try:
                             try:
-                                self.callbacks.end_listen_callback()
+                                tx = self.stt.transcribe(audio)
                             except Exception as e:
-                                LOG.exception(f"end listen callback error: {e}")
+                                LOG.exception(f"STT transcription error: {e}")
+                                tx = []
+
+                            if self.callbacks:
+                                if tx and tx[0][0]:
+                                    utt = tx[0][0].rstrip(" '\"").lstrip(" '\"")
+                                    try:
+                                        self.callbacks.text_callback(utt, self.lang)
+                                    except Exception as e:
+                                        LOG.exception(f"text callback error: {e}")
+                                else:
+                                    try:
+                                        self.callbacks.error_callback(audio)
+                                    except Exception as e:
+                                        LOG.exception(f"error callback error: {e}")
+                        finally:
+                            speech_data = b""
+                            self.state = State.WAITING_WAKEWORD
+                            if self.callbacks:
+                                try:
+                                    self.callbacks.end_listen_callback()
+                                except Exception as e:
+                                    LOG.exception(f"end listen callback error: {e}")
             except KeyboardInterrupt:
                 break
             except Exception as e:

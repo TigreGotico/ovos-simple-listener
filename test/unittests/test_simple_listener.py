@@ -15,6 +15,8 @@ from unittest.mock import MagicMock, patch, call
 
 import speech_recognition as sr
 
+from ovos_spec_tools import SpecMessage
+
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -565,18 +567,18 @@ class TestOVOSCallbacks(unittest.TestCase):
         self.assertIn("recognizer_loop:wakeword", emitted)
 
     def test_listen_callback_emits_record_begin(self):
-        """listen_callback emits recognizer_loop:record_begin."""
+        """listen_callback emits the record-started spec topic."""
         OVOSCallbacks, bus = self._make_callbacks()
         OVOSCallbacks.listen_callback()
         emitted = [c[0][0].msg_type for c in bus.emit.call_args_list]
-        self.assertIn("recognizer_loop:record_begin", emitted)
+        self.assertIn(SpecMessage.LISTENER_RECORD_STARTED, emitted)
 
     def test_end_listen_callback_emits_record_end(self):
-        """end_listen_callback emits recognizer_loop:record_end."""
+        """end_listen_callback emits the record-ended spec topic."""
         OVOSCallbacks, bus = self._make_callbacks()
         OVOSCallbacks.end_listen_callback()
         emitted = [c[0][0].msg_type for c in bus.emit.call_args_list]
-        self.assertIn("recognizer_loop:record_end", emitted)
+        self.assertIn(SpecMessage.LISTENER_RECORD_ENDED, emitted)
 
     def test_error_callback_emits_recognition_unknown(self):
         """error_callback emits recognizer_loop:speech.recognition.unknown."""
@@ -587,12 +589,12 @@ class TestOVOSCallbacks(unittest.TestCase):
         self.assertIn("recognizer_loop:speech.recognition.unknown", emitted)
 
     def test_text_callback_emits_utterance(self):
-        """text_callback emits recognizer_loop:utterance with correct payload."""
+        """text_callback emits the utterance spec topic with correct payload."""
         OVOSCallbacks, bus = self._make_callbacks()
         OVOSCallbacks.text_callback("hello world", "en-us")
         emitted = {c[0][0].msg_type: c[0][0].data for c in bus.emit.call_args_list}
-        self.assertIn("recognizer_loop:utterance", emitted)
-        payload = emitted["recognizer_loop:utterance"]
+        self.assertIn(SpecMessage.UTTERANCE, emitted)
+        payload = emitted[SpecMessage.UTTERANCE]
         self.assertEqual(payload["utterances"], ["hello world"])
         self.assertEqual(payload["lang"], "en-us")
 

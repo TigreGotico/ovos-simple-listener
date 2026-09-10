@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ovos-simple-listener"
+dynamic = ["version"]
+description = "ovos-core listener daemon client"
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.9"
+
+dependencies = [
+    "ovos-plugin-manager>=2.1.1,<3.0.0",
+    "ovos-utils>=0.0.38,<1.0.0",
+    "ovos-config>=0.4.3,<4.0.0",
+    "ovos_bus_client>=0.0.10,<3.0.0",
+    "SpeechRecognition~=3.9",
+]
+
+[project.urls]
+Homepage = "https://github.com/OpenVoiceOS/ovos-simple-listener"
+Repository = "https://github.com/OpenVoiceOS/ovos-simple-listener"
+
+[project.scripts]
+ovos-simple-listener = "ovos_simple_listener.__main__:main"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["ovos_simple_listener*"]
+
+[tool.setuptools.dynamic]
+version = {attr = "ovos_simple_listener.version.__version__"}
